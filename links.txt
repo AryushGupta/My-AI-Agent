@@ -1,0 +1,7 @@
+This file contains link from where I am learning to build my own AI Agent
+
+https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/
+
+https://console.groq.com/docs/autogen
+
+https://www.geeksforgeeks.org/artificial-intelligence/introduction-to-langchain/
