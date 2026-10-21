@@ -13,20 +13,19 @@ try:
 except Exception:
     pass
 
+# global variable
 graph = db.select_graph("research_graph")
 
 # Load the Excel file
-df = pd.read_excel("./research_papers_graph_dataset.xlsx")
+df = pd.read_excel("./research_papers_data.xlsx")
 
 
-def create_paper_node(content: dict):
+def create_paper_node(data: dict):
     query = """
         CREATE (p:Paper {
             id: $id,
             title: $title,
             institution: $institution,
-            field: $field,
-            subject: $subject,
             keywords: $keywords,
             year: $year,
             paper_url: $paper_url,
@@ -35,49 +34,92 @@ def create_paper_node(content: dict):
         """
 
     graph.query(query, {
-        "id": content["Paper_ID"],
-        "title": content["Title"],
-        "institution": content["Institution"],
-        "field": content["Field"],
-        "subject": content["Subject"],
-        "keywords": content["Keywords"].split(';'),
-        "year": int(content["Year"]),
-        "paper_url": content["Paper_URL"],
-        "references": str(content["References"])
+        "id": data["Paper_ID"],
+        "title": data["Title"],
+        "institution": data["Institution"],
+        "keywords": data["Keywords"].split(';'),
+        "year": int(data["Year"]),
+        "paper_url": data["Paper_URL"],
+        "references": str(data["References"])
     })
 
-# as papers have multiple author names , we need to create a separate node for each if it doesn't exist
+# as papers have multiple author names , we need to create a separate node for each author if it doesn't exist
 
-
-def author_name(content: dict):
-    authors = content["Authors"].split(';')
+def author_name(data: dict):
+    authors = data["Authors"].split(';')
     for author in authors:
         create_author_node(author)
 
 
-def author_node_exists(author_name: str) -> bool:
+def create_author_node(data: str):
+    # check if node exist or not
     query = f"""
-    MATCH (a:Author {{author: $author_name}})
+    MATCH (a:Author {{author: $author}})
     RETURN count(a) AS total
     """
-    result = graph.query(query, {"author_name": author_name})
-    return result.result_set[0][0] > 0
-
-
-def create_author_node(author_name: str):
-    if not author_node_exists(author_name=author_name):
+    result = graph.query(query, {"author": data})
+    if result.result_set[0][0] > 0:
+        print(f"{data} node exist")
+    else:
         query = """
             CREATE (a:Author {
                 author: $author
             })
             """
         graph.query(query, {
-            "author": author_name
+            "author": data
         })
+        print(f"{data} author node created")
 
+
+def create_institution_node(data: str):
+    # check if node already exist or not
+    query = f"""
+    MATCH (i:Institution {{institution: $institution}})
+    RETURN count(i) AS total
+    """
+    result = graph.query(query, {"institution": data})
+    if result.result_set[0][0] > 0:
+        print(f"{data} node exist")
+    else:
+        query = """
+            CREATE (i:Institution {
+                institution: $institution
+            })
+            """
+        graph.query(query, {
+            "institution": data
+        })
+        print(f"{data} node created.")
+
+# def create_field_node(data:dict):
+    # check if node already exist or not
+        # query = f"""
+        # MATCH (f:field {{field: $field, subject: $subject}})
+        # RETURN count(f) AS total
+        # """
+        # result = graph.query(query, {"field": data["Field"],
+                                     
+        #                              })
+        # if result.result_set[0][0] > 0:
+        #     print(f"{data} node exist")
+        # else:
+        #     query = """
+        #         CREATE (f:Field {
+        #             field: $field
+        #         })
+        #         """
+        #     graph.query(query, {
+        #         "field": data['Field'],
+        #         "subject"
+        #     })
+        #     print(f"{data} node created.")
+
+def create_references_node(data:dict):
+    return
 
 # Iterate and print row by row
-for index, row in df.iterrows():
-    # Convert the row to a dictionary or list to print it cleanly
-    create_paper_node(row.to_dict())
-    print(f"Row {index}: {row.to_dict()}")
+# for index, row in df.iterrows():
+#     # Convert the row to a dictionary or list to print it cleanly
+#     create_paper_node(row.to_dict())
+#     print(f"Row {index}: {row.to_dict()}")

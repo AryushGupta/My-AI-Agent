@@ -5,3 +5,5 @@ https://openai.com/business/guides-and-resources/a-practical-guide-to-building-a
 https://console.groq.com/docs/autogen
 
 https://www.geeksforgeeks.org/artificial-intelligence/introduction-to-langchain/
+
+https://www.geeksforgeeks.org/python/python-create-and-write-on-excel-file-using-xlsxwriter-module/
