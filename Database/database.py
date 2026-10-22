@@ -17,7 +17,7 @@ except Exception:
 graph = db.select_graph("research_graph")
 
 # Load the Excel file
-df = pd.read_excel("./research_papers_data.xlsx")
+df = pd.read_excel("./Dataset/research_papers_data.xlsx")
 
 
 def create_paper_node(data: dict):
@@ -92,34 +92,36 @@ def create_institution_node(data: str):
         })
         print(f"{data} node created.")
 
-# def create_field_node(data:dict):
+def create_field_node(data:dict):
     # check if node already exist or not
-        # query = f"""
-        # MATCH (f:field {{field: $field, subject: $subject}})
-        # RETURN count(f) AS total
-        # """
-        # result = graph.query(query, {"field": data["Field"],
-                                     
-        #                              })
-        # if result.result_set[0][0] > 0:
-        #     print(f"{data} node exist")
-        # else:
-        #     query = """
-        #         CREATE (f:Field {
-        #             field: $field
-        #         })
-        #         """
-        #     graph.query(query, {
-        #         "field": data['Field'],
-        #         "subject"
-        #     })
-        #     print(f"{data} node created.")
+    print(data['Field'] , data['Subject'])
+    query = f"""
+    MATCH (f:field {{field: $field, subject: $subject}})
+    RETURN count(f) AS total
+    """
+    result = graph.query(query, {"field": data["Field"],
+                                "subject" : data["Subject"]})
+    if result.result_set[0][0] > 0:
+        print(f"{data} node exist")
+    else:
+        query = """
+            CREATE (f:Field {
+                field: $field
+            })
+            """
+        graph.query(query, {
+            "field": data['Field'],
+            "subject" : data['Subject']
+        })
+        print(f"{data} node created.")
 
 def create_references_node(data:dict):
     return
 
 # Iterate and print row by row
-# for index, row in df.iterrows():
-#     # Convert the row to a dictionary or list to print it cleanly
-#     create_paper_node(row.to_dict())
-#     print(f"Row {index}: {row.to_dict()}")
+for index, row in df.iterrows():
+    # Convert the row to a dictionary or list to print it cleanly
+    # create_paper_node(row.to_dict())
+    # print(f"Row {index}: {row.to_dict()}")
+    create_field_node(row.to_dict())
+    break

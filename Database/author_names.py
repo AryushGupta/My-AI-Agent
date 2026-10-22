@@ -1,9 +1,9 @@
 import pandas as pd
 import xlsxwriter , random , string
 
-df = pd.read_excel("./Database/research_papers_data.xlsx")
+df = pd.read_excel("../Dataset/research_papers_data.xlsx")
 
-author_details_workbook = xlsxwriter.Workbook('author_names.xlsx')
+author_details_workbook = xlsxwriter.Workbook('../Dataset/author_names.xlsx')
 author_worksheet = author_details_workbook.add_worksheet()
 
 CHARACTERS = string.ascii_letters + string.digits
@@ -38,10 +38,6 @@ def add_author(data:dict):
 
 for index, row in df.iterrows():
     add_author(row)
-
-for key , value in authors_data.items():
-    for k , v in value.items():
-        print(k , v)
 
 # creating the excel sheet
 headers = ["ID","Author","Email","Institution"]

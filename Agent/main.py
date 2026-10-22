@@ -2,7 +2,7 @@
 import os
 from dotenv import load_dotenv
 from groq import Groq
-from memory import get_chat_memory, add_message
+from Agent.memory import get_chat_memory, add_message
 
 load_dotenv()
 
