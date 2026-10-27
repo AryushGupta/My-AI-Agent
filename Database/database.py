@@ -52,7 +52,7 @@ def create_paper_node(data: dict):
 def author_name(data: dict):
     authors = data["Authors"].split(';')
     for author_name in authors:
-        create_author_node(author_name,data['Institution'], data['Paper_ID'])
+        create_author_node(author_name.strip().casefold(),data['Institution'], data['Paper_ID'])
 
 
 def create_author_node(author_name: str, institution_name: str, paper_id: str):
@@ -123,7 +123,7 @@ def create_institution_node(institution_name: str, paper_id: str):
     query = """
         MATCH (p:Paper {id: $paper_id})
         MATCH (i:Institution {institution: $institution})
-        MERGE (p)-[:AFFILIATED_WITH]->(i)
+        MERGE (p)-[:PUBLISHING_INSTITUTION]->(i)
     """
     graph.query(query, {
         "paper_id": paper_id,
@@ -193,17 +193,12 @@ def year_node(year: int, paper_id: str):
     query = """
         MATCH (p:Paper {id: $paper_id})
         MATCH (y:Year {year: $year})
-        MERGE (p)-[:PUBLISHED_IN]->(y)
+        MERGE (p)-[:PUBLISHED_IN_YEAR]->(y)
     """
     graph.query(query, {
         "paper_id": paper_id,
         "year": int(year)
     })
 
-
-count = 0
 for index, row in df.iterrows():
-    if count != 1:
-        create_paper_node(row.to_dict())
-        print(row.to_dict())
-        count += 1
+    create_paper_node(row.to_dict())

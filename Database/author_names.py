@@ -20,9 +20,10 @@ authors_data = {}
 
 def add_author(data:dict):
     authors = data['Authors'].split(';')
-    institution = data['Institution']
+    institution = data['Institution'].strip().casefold()
 
     for author in authors:
+        author = author.strip().casefold()
         key = f"{author}-{institution}"
 
         if key not in authors_data:
