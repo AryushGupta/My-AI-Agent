@@ -1,12 +1,20 @@
 import pandas as pd
+from pathlib import Path
 import xlsxwriter , random , string
 
 df = pd.read_excel("../Dataset/research_papers_data.xlsx")
 
-author_details_workbook = xlsxwriter.Workbook('../Dataset/author_names.xlsx')
-author_worksheet = author_details_workbook.add_worksheet()
-
 CHARACTERS = string.ascii_letters + string.digits
+
+output_file = Path("../Dataset/author_names.xlsx")
+
+if output_file.exists():
+    print("File already exists. Overwriting...")
+else:
+    print("File does not exist. Creating a new file...")
+
+author_details_workbook = xlsxwriter.Workbook(str(output_file))
+author_worksheet = author_details_workbook.add_worksheet()
 
 # dictionary schema
 # "author-institution" : {
